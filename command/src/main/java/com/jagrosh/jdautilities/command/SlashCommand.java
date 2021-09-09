@@ -15,11 +15,9 @@
  */
 package com.jagrosh.jdautilities.command;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -28,6 +26,8 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -226,7 +226,14 @@ public abstract class SlashCommand extends Command
         // owner check
         if(ownerCommand && !(isOwner(event, client)))
         {
-            terminate(event, "Only an owner may run this command. Sorry.", client);
+            User user = event.getUser();
+            MessageEmbed notOwnerEmbed = new EmbedBuilder()
+                .setTitle("Only an owner may run this command.")
+                .setColor(Color.RED)
+                .setFooter("Requested by " + user.getAsTag(), user.getEffectiveAvatarUrl())
+                .setTimestamp(Instant.now())
+                .build();
+            terminate(event, notOwnerEmbed, client);
             return;
         }
 
@@ -586,6 +593,14 @@ public abstract class SlashCommand extends Command
     {
         if(message!=null)
             event.reply(message).setEphemeral(true).queue();
+        if(client.getListener()!=null)
+            client.getListener().onTerminatedSlashCommand(event, this);
+    }
+
+    private void terminate(SlashCommandEvent event, MessageEmbed embed, CommandClient client)
+    {
+        if(embed!=null)
+            event.replyEmbeds(embed).mentionRepliedUser(false).setEphemeral(true).queue();
         if(client.getListener()!=null)
             client.getListener().onTerminatedSlashCommand(event, this);
     }
