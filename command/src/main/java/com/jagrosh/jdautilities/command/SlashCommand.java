@@ -18,7 +18,7 @@ package com.jagrosh.jdautilities.command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.commands.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
@@ -199,11 +199,9 @@ public abstract class SlashCommand extends Command
      * Runs checks for the {@link SlashCommand SlashCommand} with the
      * given {@link SlashCommandEvent SlashCommandEvent} that called it.
      * <br>Will terminate, and possibly respond with a failure message, if any checks fail.
-     *
      * @param  event
      *         The SlashCommandEvent that triggered this Command
      * @param  client
-     *         The CommandClient for checks and stuff
      */
     public final void run(SlashCommandEvent event, CommandClient client)
     {
