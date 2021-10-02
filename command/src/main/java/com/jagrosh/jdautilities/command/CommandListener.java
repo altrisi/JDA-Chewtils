@@ -15,7 +15,7 @@
  */
 package com.jagrosh.jdautilities.command;
 
-import net.dv8tion.jda.api.events.interaction.commands.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
@@ -39,7 +39,7 @@ public interface CommandListener
 
     /**
      * Called when a {@link com.jagrosh.jdautilities.command.SlashCommand SlashCommand} is triggered
-     * by a {@link net.dv8tion.jda.api.events.interaction.commands.SlashCommandEvent SlashCommandEvent}.
+     * by a {@link net.dv8tion.jda.api.events.interaction.SlashCommandEvent SlashCommandEvent}.
      *
      * @param  event
      *         The SlashCommandEvent that triggered the Command
@@ -66,7 +66,7 @@ public interface CommandListener
 
     /**
      * Called when a {@link com.jagrosh.jdautilities.command.SlashCommand SlashCommand} is triggered
-     * by a {@link net.dv8tion.jda.api.events.interaction.commands.SlashCommandEvent SlashCommandEvent} after it's
+     * by a {@link net.dv8tion.jda.api.events.interaction.SlashCommandEvent SlashCommandEvent} after it's
      * completed successfully.
      *
      * <p>Note that a <i>successfully</i> completed slash command is one that has not encountered
@@ -94,7 +94,7 @@ public interface CommandListener
 
     /**
      * Called when a {@link com.jagrosh.jdautilities.command.SlashCommand Command} is triggered
-     * by a {@link net.dv8tion.jda.api.events.interaction.commands.SlashCommandEvent SlashCommandEvent} but is
+     * by a {@link net.dv8tion.jda.api.events.interaction.SlashCommandEvent SlashCommandEvent} but is
      * terminated before completion.
      *
      * @param  event
