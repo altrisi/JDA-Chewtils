@@ -469,6 +469,328 @@ public class CommandEvent
     }
 
     /**
+     * Replies with a String message.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}.
+     *
+     * <p><b>NOTE:</b> This message can exceed the 2000 character cap, and will be sent
+     * in two split Messages.
+     *
+     * @param  message
+     *         A String message to reply with
+     */
+    public void reply(String message, boolean mention)
+    {
+        event.getMessage().reply(message).mentionRepliedUser(mention).queue();
+    }
+
+    /**
+     * Replies with a String message and then queues a {@link java.util.function.Consumer}.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}
+     * with the provided Consumer as it's success callback.
+     *
+     * <p><b>NOTE:</b> This message can exceed the 2000 character cap, and will be sent in
+     * two split Messages.
+     * <br>The Consumer will be applied to the last message sent if this occurs.
+     *
+     * @param  message
+     *         A String message to reply with
+     * @param  success
+     *         The Consumer to queue after sending the Message is sent.
+     */
+    public void reply(String message, Consumer<Message> success, boolean mention)
+    {
+        event.getMessage().reply(message).mentionRepliedUser(mention).queue(success);
+    }
+
+    /**
+     * Replies with a String message and then queues a {@link java.util.function.Consumer}.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}
+     * with the first Consumer as it's success callback and the second Consumer as the failure callback.
+     *
+     * <p><b>NOTE:</b> This message can exceed the 2000 character cap, and will be sent in
+     * two split Messages.
+     * <br>Either Consumer will be applied to the last message sent if this occurs.
+     *
+     * @param  message
+     *         A String message to reply with
+     * @param  success
+     *         The Consumer to queue after sending the Message is sent.
+     * @param  failure
+     *         The Consumer to run if an error occurs when sending the Message.
+     */
+    public void reply(String message, Consumer<Message> success, Consumer<Throwable> failure, boolean mention)
+    {
+        event.getMessage().reply(message).mentionRepliedUser(mention).queue(success, failure);
+    }
+
+    /**
+     * Replies with a {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed}.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}.
+     *
+     * @param  embed
+     *         The MessageEmbed to reply with
+     */
+    public void reply(MessageEmbed embed, boolean mention)
+    {
+        event.getMessage().replyEmbeds(embed).mentionRepliedUser(mention).queue(m -> {
+            if(event.isFromType(ChannelType.TEXT))
+                linkId(m);
+        });
+    }
+
+    /**
+     * Replies with a {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed}
+     * and then queues a {@link java.util.function.Consumer}.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}
+     * with the provided Consumer as it's success callback.
+     *
+     * @param  embed
+     *         The MessageEmbed to reply with
+     * @param  success
+     *         The Consumer to queue after sending the Message is sent.
+     */
+    public void reply(MessageEmbed embed, Consumer<Message> success, boolean mention)
+    {
+        event.getMessage().replyEmbeds(embed).mentionRepliedUser(mention).queue(m -> {
+            if(event.isFromType(ChannelType.TEXT))
+                linkId(m);
+            success.accept(m);
+        });
+    }
+
+    /**
+     * Replies with a {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed}
+     * and then queues a {@link java.util.function.Consumer}.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}
+     * with the first Consumer as it's success callback and the second Consumer as the failure callback.
+     *
+     * @param  embed
+     *         The MessageEmbed to reply with
+     * @param  success
+     *         The Consumer to queue after sending the Message is sent.
+     * @param  failure
+     *         The Consumer to run if an error occurs when sending the Message.
+     */
+    public void reply(MessageEmbed embed, Consumer<Message> success, Consumer<Throwable> failure, boolean mention)
+    {
+        event.getMessage().replyEmbeds(embed).mentionRepliedUser(mention).queue(m -> {
+            if(event.isFromType(ChannelType.TEXT))
+                linkId(m);
+            success.accept(m);
+        }, failure);
+    }
+
+    /**
+     * Replies with a {@link net.dv8tion.jda.api.entities.Message Message}.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}.
+     *
+     * @param  message
+     *         The Message to reply with
+     */
+    public void reply(Message message, boolean mention)
+    {
+        event.getMessage().reply(message).mentionRepliedUser(mention).queue(m -> {
+            if(event.isFromType(ChannelType.TEXT))
+                linkId(m);
+        });
+    }
+
+    /**
+     * Replies with a {@link net.dv8tion.jda.api.entities.Message Message} and then
+     * queues a {@link java.util.function.Consumer}.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#success()}
+     * with the provided Consumer as it's success callback.
+     *
+     * @param  message
+     *         The Message to reply with
+     * @param  success
+     *         The Consumer to success after sending the Message is sent.
+     */
+    public void reply(Message message, Consumer<Message> success, boolean mention)
+    {
+        event.getMessage().reply(message).mentionRepliedUser(mention).queue(m -> {
+            if(event.isFromType(ChannelType.TEXT))
+                linkId(m);
+            success.accept(m);
+        });
+    }
+
+    /**
+     * Replies with a {@link net.dv8tion.jda.api.entities.Message Message} and then
+     * queues a {@link java.util.function.Consumer}.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}
+     * with the first Consumer as it's success callback and the second Consumer as the failure callback.
+     *
+     * @param  message
+     *         The Message to reply with
+     * @param  success
+     *         The Consumer to queue after sending the Message is sent.
+     * @param  failure
+     *         The Consumer to run if an error occurs when sending the Message.
+     */
+    public void reply(Message message, Consumer<Message> success, Consumer<Throwable> failure, boolean mention)
+    {
+        event.getMessage().reply(message).mentionRepliedUser(mention).queue(m -> {
+            if(event.isFromType(ChannelType.TEXT))
+                linkId(m);
+            success.accept(m);
+        }, failure);
+    }
+
+    /**
+     * Replies with a {@link java.io.File} with the provided name, or a default name
+     * if left null.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}.
+     *
+     * <p>This method uses {@link net.dv8tion.jda.api.entities.MessageChannel#sendFile(File, String, net.dv8tion.jda.api.utils.AttachmentOption...) MessageChannel#sendFile(File, String, AttachmentOption...)}
+     * to send the File. For more information on what a bot may send using this, you may find the info in that method.
+     *
+     * @param  file
+     *         The File to reply with
+     * @param  filename
+     *         The filename that Discord should display (null for default).
+     */
+    public void reply(File file, String filename, boolean mention)
+    {
+        event.getMessage().reply(file, filename).mentionRepliedUser(mention).queue();
+    }
+
+    /**
+     * Replies with a String message and a {@link java.io.File} with the provided name, or a default
+     * name if left null.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}.
+     *
+     * <p>This method uses {@link net.dv8tion.jda.api.entities.MessageChannel#sendFile(File, String, net.dv8tion.jda.api.utils.AttachmentOption...) MessageChannel#sendFile(File, String, AttachmentOption...)}
+     * to send the File. For more information on what a bot may send using this, you may find the info in that method.
+     *
+     * @param  message
+     *         A String message to reply with
+     * @param  file
+     *         The File to reply with
+     * @param  filename
+     *         The filename that Discord should display (null for default).
+     */
+    public void reply(String message, File file, String filename, boolean mention)
+    {
+        event.getMessage().reply(file, filename).content(message).mentionRepliedUser(mention).queue();
+    }
+
+    /**
+     * Replies with a formatted String message using the provided arguments.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}.
+     *
+     * <p><b>NOTE:</b> This message can exceed the 2000 character cap, and will be sent
+     * in two split Messages.
+     *
+     * @param  format
+     *         A formatted String
+     * @param  args
+     *         The arguments to use with the format
+     */
+    public void replyFormatted(String format, boolean mention, Object... args)
+    {
+        event.getMessage().replyFormat(format, args).mentionRepliedUser(mention).queue();
+    }
+
+    /**
+     * Replies with a {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed} if possible,
+     * or just a String message if it cannot send the embed.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}.
+     *
+     * <p><b>NOTE:</b> This alternate String message can exceed the 2000 character cap, and will
+     * be sent in two split Messages.
+     *
+     * @param  embed
+     *         The MessageEmbed to reply with
+     * @param  alternateMessage
+     *         A String message to reply with if the provided MessageEmbed cannot be sent
+     */
+    public void replyOrAlternate(MessageEmbed embed, String alternateMessage, boolean mention)
+    {
+        try {
+            event.getMessage().replyEmbeds(embed).mentionRepliedUser(mention).queue();
+        } catch(PermissionException e) {
+            reply(alternateMessage);
+        }
+    }
+
+    /**
+     * Replies with a String message and a {@link java.io.File} with the provided name, or a default
+     * name if left null.
+     *
+     * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by
+     * sending the response as a {@link net.dv8tion.jda.api.entities.Message Message}
+     * automatically does {@link net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}.
+     *
+     * <p>This method uses {@link net.dv8tion.jda.api.entities.MessageChannel#sendFile(File, String, net.dv8tion.jda.api.utils.AttachmentOption...) MessageChannel#sendFile(File, String, AttachmentOption...)}
+     * to send the File. For more information on what a bot may send using this, you may find the info in that method.
+     *
+     * <p><b>NOTE:</b> This alternate String message can exceed the 2000 character cap, and will
+     * be sent in two split Messages.
+     *
+     * <p>It is also worth noting that unlike {@link com.jagrosh.jdautilities.command.CommandEvent#reply(File,String) CommandEvent#reply(File, String)}
+     * and {@link com.jagrosh.jdautilities.command.CommandEvent#reply(String,File,String) CommandEvent#reply(String, File, String)},
+     * this method does not throw a {@link java.io.IOException}. This is because the cause of the alternate String message being sent comes directly from a
+     * thrown {@link java.lang.Exception}, and thus a thrown IOException is grounds for the sending of the alternate message.
+     *
+     * @param  message
+     *         A String message to reply with
+     * @param  file
+     *         The File to reply with
+     * @param  filename
+     *         The filename that Discord should display (null for default).
+     * @param  alternateMessage
+     *         A String message to reply with if the file cannot be uploaded, or an {@link java.io.IOException} is thrown
+     */
+    public void replyOrAlternate(String message, File file, String filename, String alternateMessage, boolean mention)
+    {
+        try {
+            event.getMessage().reply(file, filename).content(message).mentionRepliedUser(mention).queue();
+        } catch(Exception e) {
+            reply(alternateMessage);
+        }
+    }
+
+    /**
      * Replies with a String message sent to the calling {@link net.dv8tion.jda.api.entities.User User}'s
      * {@link net.dv8tion.jda.api.entities.PrivateChannel PrivateChannel}.
      *
