@@ -161,7 +161,7 @@ public class CommandEvent
      */
     public void reply(String message)
     {
-        sendMessage(event.getChannel(), message);
+        event.getMessage().reply(message).queue();
     }
     
     /**
@@ -183,7 +183,7 @@ public class CommandEvent
      */
     public void reply(String message, Consumer<Message> success)
     {
-    	sendMessage(event.getChannel(), message, success);
+        event.getMessage().reply(message).queue(success);
     }
 
     /**
@@ -207,7 +207,7 @@ public class CommandEvent
      */
     public void reply(String message, Consumer<Message> success, Consumer<Throwable> failure)
     {
-        sendMessage(event.getChannel(), message, success, failure);
+        event.getMessage().reply(message).queue(success, failure);
     }
 
     /**
@@ -222,7 +222,7 @@ public class CommandEvent
      */
     public void reply(MessageEmbed embed)
     {
-        event.getChannel().sendMessage(embed).queue(m -> {
+        event.getMessage().replyEmbeds(embed).queue(m -> {
             if(event.isFromType(ChannelType.TEXT))
                 linkId(m);
         });
@@ -244,7 +244,7 @@ public class CommandEvent
      */
     public void reply(MessageEmbed embed, Consumer<Message> success)
     {
-    	event.getChannel().sendMessage(embed).queue(m -> {
+    	event.getMessage().replyEmbeds(embed).queue(m -> {
     	    if(event.isFromType(ChannelType.TEXT))
     	        linkId(m);
     	    success.accept(m);
@@ -269,7 +269,7 @@ public class CommandEvent
      */
     public void reply(MessageEmbed embed, Consumer<Message> success, Consumer<Throwable> failure)
     {
-        event.getChannel().sendMessage(embed).queue(m -> {
+        event.getMessage().replyEmbeds(embed).queue(m -> {
             if(event.isFromType(ChannelType.TEXT))
                 linkId(m);
             success.accept(m);
@@ -288,7 +288,7 @@ public class CommandEvent
      */
     public void reply(Message message)
     {
-        event.getChannel().sendMessage(message).queue(m -> {
+        event.getMessage().reply(message).queue(m -> {
             if(event.isFromType(ChannelType.TEXT))
                 linkId(m);
         });
@@ -310,7 +310,7 @@ public class CommandEvent
      */
     public void reply(Message message, Consumer<Message> success)
     {
-        event.getChannel().sendMessage(message).queue(m -> {
+        event.getMessage().reply(message).queue(m -> {
             if(event.isFromType(ChannelType.TEXT))
                 linkId(m);
             success.accept(m);
@@ -335,7 +335,7 @@ public class CommandEvent
      */
     public void reply(Message message, Consumer<Message> success, Consumer<Throwable> failure)
     {
-        event.getChannel().sendMessage(message).queue(m -> {
+        event.getMessage().reply(message).queue(m -> {
             if(event.isFromType(ChannelType.TEXT))
                 linkId(m);
             success.accept(m);
@@ -360,7 +360,7 @@ public class CommandEvent
      */
     public void reply(File file, String filename)
     {
-        event.getChannel().sendFile(file, filename).queue();
+        event.getMessage().reply(file, filename).queue();
     }
     
     /**
@@ -383,7 +383,7 @@ public class CommandEvent
      */
     public void reply(String message, File file, String filename)
     {
-        event.getChannel().sendFile(file, filename).content(message).queue();
+        event.getMessage().reply(file, filename).content(message).queue();
     }
     
     /**
@@ -403,7 +403,7 @@ public class CommandEvent
      */
     public void replyFormatted(String format, Object... args)
     {
-        sendMessage(event.getChannel(), String.format(format, args));
+        event.getMessage().replyFormat(format, args).queue();
     }
     
     /**
@@ -425,7 +425,7 @@ public class CommandEvent
     public void replyOrAlternate(MessageEmbed embed, String alternateMessage)
     {
         try {
-            event.getChannel().sendMessage(embed).queue();
+            event.getMessage().replyEmbeds(embed).queue();
         } catch(PermissionException e) {
             reply(alternateMessage);
         }
@@ -462,7 +462,7 @@ public class CommandEvent
     public void replyOrAlternate(String message, File file, String filename, String alternateMessage)
     {
         try {
-            event.getChannel().sendFile(file, filename).content(message).queue();
+            event.getMessage().reply(file, filename).content(message).queue();
         } catch(Exception e) {
             reply(alternateMessage);
         }
