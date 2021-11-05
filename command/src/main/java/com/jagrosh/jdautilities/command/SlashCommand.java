@@ -18,7 +18,7 @@ package com.jagrosh.jdautilities.command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.commands.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
@@ -256,6 +256,10 @@ public abstract class SlashCommand extends Command
             //user perms
             for(Permission p: userPermissions)
             {
+                // Member will never be null because this is only ran in a server (text channel)
+                if(event.getMember() == null)
+                    continue;
+
                 if(p.isChannel())
                 {
                     if(!event.getMember().hasPermission(event.getTextChannel(), p))
@@ -277,6 +281,12 @@ public abstract class SlashCommand extends Command
             // bot perms
             for(Permission p: botPermissions)
             {
+                // We can ignore this permission because bots can reply with embeds even without either of these perms.
+                // The only thing stopping them is the user's ability to use Application Commands.
+                // It's extremely dumb, but what more can you do.
+                if (p == Permission.VIEW_CHANNEL || p == Permission.MESSAGE_EMBED_LINKS)
+                    continue;
+
                 Member selfMember = event.getGuild() == null ? null : event.getGuild().getSelfMember();
                 if(p.isChannel())
                 {

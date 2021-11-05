@@ -18,8 +18,8 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'maven-publish'
-    id 'com.github.ben-manes.versions' version '0.17.0'
-    id 'com.github.johnrengelman.shadow' version '2.0.2'
+    id "com.github.ben-manes.versions" version "0.39.0"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
 def versionInfo = [major: '1', minor: System.getenv("BUILD_NUMBER").toString()]
@@ -36,7 +36,7 @@ allprojects {
     version = versionInfo.values().join('.')
 
     ext {
-        jdaVersion = 'feature~context-menus-SNAPSHOT'
+        jdaVersion = '4.3.0_331'
         slf4jVersion = '1.7.25'
         okhttpVersion = '3.13.0'
         findbugsVersion = '3.0.2'
@@ -44,7 +44,7 @@ allprojects {
         junitVersion = '4.13.1' // TODO Move to junit 5?
 
         dependencies {
-            jda = { [group: 'com.github.aasmart', name: 'JDA', version: jdaVersion] }
+            jda = { [group: 'net.dv8tion', name: 'JDA', version: jdaVersion] }
             slf4j = { [group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion] }
             okhttp = { [group: 'com.squareup.okhttp3', name: 'okhttp', version: okhttpVersion] }
             findbugs = { [group: 'com.google.code.findbugs', name: 'jsr305', version: findbugsVersion] }
@@ -209,14 +209,14 @@ subprojects {
 
     afterEvaluate {
         if(project.includeInParent) {
-            rootProject.dependencies.compile project
+            rootProject.dependencies.implementation project
         }
     }
 }
 
 configurations {
-    compile {
-        description = 'compile'
+    implementation {
+        description = 'implementation'
         transitive = true
     }
 }
@@ -293,7 +293,7 @@ publishing {
                 repositoryNode.appendNode('url', 'https://m2.chew.pro')
 
                 def dependenciesNode = asNode().appendNode('dependencies')
-                configurations.compile.allDependencies.each {
+                configurations.implementation.allDependencies.each {
                     def dependencyNode = dependenciesNode.appendNode('dependency')
                     dependencyNode.appendNode('groupId', it.group)
                     dependencyNode.appendNode('artifactId', it instanceof ProjectDependency ? it.dependencyProject.artifactId : it.name)
